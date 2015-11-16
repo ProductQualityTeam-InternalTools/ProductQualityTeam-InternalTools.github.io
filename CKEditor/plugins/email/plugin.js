@@ -68,7 +68,9 @@ CKEDITOR.plugins.add( 'email',
 	});
 
 	function recordEmail( editor ) {
-		var apptoken = "bzp4e3ubmekgnt45z6fucmmai5k"
+		var apptoken = "bzp4e3ubmekgnt45z6fucmmai5k";
+		var qbdbid = "bgkvndp4z";
+		var qbfid = "504";
 		var error = new CKEDITOR.plugins.notification( editor, { message: 'Unable to record email in Quickbase. Please do so manually.', type: 'warning' } );
 		var rid = document.URL.match(/&case=([^&]+)/);
 		if (!rid) { error.show(); return; }
@@ -85,14 +87,14 @@ CKEDITOR.plugins.add( 'email',
 		}
 		else { error.show(); var body = "<p>Body of email not logged.</p>"; }
 		var url="";
-		url +="https://intuitcorp.quickbase.com/db/bgkvndp4z";
+		url +="https://intuitcorp.quickbase.com/db/"+qbdbid;
 		url +="?act=API_EditRecord";
 
 		var request="";
 		request += '<qdbapi>';
 		request += '<apptoken>'+apptoken+'</apptoken>';
 		request += '<rid>'+rid[1]+'</rid>';
-		request += "<field fid='504'><![CDATA[<h3>Template: "+decodeURI(temp[1])+"</h3>"+body+"]]></field>";
+		request += "<field fid='"+qbfid+"'><![CDATA[<h3>Template: "+decodeURI(temp[1])+"</h3>"+body+"]]></field>";
 		request += '</qdbapi>';
 
 		jQuery.ajax({
