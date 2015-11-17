@@ -114,7 +114,7 @@ CKEDITOR.plugins.add( 'dropler', {
 					request += '<qdbapi>';
 					request += '<apptoken>'+apptoken+'</apptoken>';
 					request += "<field fid='"+fid+"' filename='"+file.name+"'>"+blob[1]+"</field>";
-					if (case) {
+					if (csicase) {
 						request += "<field fid='"+casefid+"'>"+casenum+"</field>";
 					}
 					request += '</qdbapi>';
