@@ -8,7 +8,7 @@ CKEDITOR.editorConfig = function( config ) {
 	// For complete reference see:
 	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
 
-	config.extraPlugins = 'email',
+	config.extraPlugins = 'email, dropler',
 	
 	// The toolbar groups arrangement, optimized for two toolbar rows.
 	config.toolbarGroups = [
@@ -42,4 +42,14 @@ CKEDITOR.editorConfig = function( config ) {
 	config.extraAllowedContent = '*[id](*){*}'
 	
 	config.templates_files = [ 'https://ProductQualityTeam-InternalTools.github.io/CKEditor/plugins/templates/templates/TT-templates.js' ];
+	
+	config.droplerConfig = {
+		backend: 'quickbase',
+		settings: {
+			dbid: 'bkemhpvaj',
+			token: 'cc648mnd9sin2bcpvxbt9dk64w6f',
+			imagefid: '7',
+			casefid: '6'
+		}
+	}
 };
