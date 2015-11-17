@@ -95,11 +95,11 @@ CKEDITOR.plugins.add( 'dropler', {
 				var reader = new FileReader();
 				reader.onloadend = function() {
 					var blob = reader.result;
-					var blob = blob.split(",")
+					var blob = blob.split(",");
 
-					var case = document.URL.match(/&case=([^&]+)/)
+					var case = document.URL.match(/&case=([^&]+)/);
 					if (case) {
-						case = case[1];
+						var casenum = case[1];
 					}
 					
 					var apptoken = settings.token
@@ -115,7 +115,7 @@ CKEDITOR.plugins.add( 'dropler', {
 					request += '<apptoken>'+apptoken+'</apptoken>';
 					request += "<field fid='"+fid+"' filename='"+file.name+"'>"+blob[1]+"</field>";
 					if (case) {
-						request += "<field fid='"+casefid+"'>"+case[1]+"</field>";
+						request += "<field fid='"+casefid+"'>"+casenum+"</field>";
 					}
 					request += '</qdbapi>';
 
