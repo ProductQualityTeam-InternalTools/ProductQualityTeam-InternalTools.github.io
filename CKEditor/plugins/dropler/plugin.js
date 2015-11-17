@@ -97,9 +97,9 @@ CKEDITOR.plugins.add( 'dropler', {
 					var blob = reader.result;
 					var blob = blob.split(",");
 
-					var case = document.URL.match(/&case=([^&]+)/);
-					if (case) {
-						var casenum = case[1];
+					var csicase = document.URL.match(/&case=([^&]+)/);
+					if (csicase) {
+						var casenum = csicase[1];
 					}
 					
 					var apptoken = settings.token
