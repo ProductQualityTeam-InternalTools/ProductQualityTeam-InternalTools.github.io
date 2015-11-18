@@ -55,6 +55,7 @@ CKEDITOR.plugins.add( 'dropler', {
                 }
             });
             editor.insertElement(elem);
+			editor.widgets.initOn(elem, 'image');
         }
 
         function addHeaders(xhttp, headers) {
