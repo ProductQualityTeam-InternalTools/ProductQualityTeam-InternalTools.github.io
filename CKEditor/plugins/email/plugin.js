@@ -60,6 +60,7 @@ CKEDITOR.plugins.add( 'email',
 			} catch ( e ) {
 				editor.showNotification("Copy failed, please use CTRL+C");
 			}
+				editor.widgets.destroyAll();
 				editor.showNotification("Email copied to clipboard. CTRL+V into Outlook.");
 				recordEmail( editor );
 		},
