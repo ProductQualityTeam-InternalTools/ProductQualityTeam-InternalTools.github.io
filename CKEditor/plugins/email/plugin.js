@@ -5,6 +5,7 @@ CKEDITOR.plugins.add( 'email', {
 		editor.addCommand( 'email', { modes: { wysiwyg: 1, source: 1 },
 		exec: function( editor ) {
 			//Set mailto Link from url parameters
+			editor.widgets.destroyAll()
 			var settings = editor.config.emailConfig;
 			var mailto = "mailto:";
 
@@ -61,7 +62,6 @@ CKEDITOR.plugins.add( 'email', {
 			} catch ( e ) {
 				editor.showNotification("Copy failed, please use CTRL+C");
 			}
-				editor.widgets.destroyAll()
 				editor.showNotification("Email copied to clipboard. CTRL+V into Outlook.");
 				recordEmail( editor );
 		},
