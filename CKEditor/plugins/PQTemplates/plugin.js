@@ -66,7 +66,7 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 				if ($("#footer").length == 0) { this.setState( 0 ); }
 
 				if (this.state == "2") {
-					var footer = editor.config.PQTemplates.footernoreply;
+					var footer = editor.config.PQTemplates.footerNoReply;
 					var content = editor.getData();
 					var cfooter = $("#footer", content)[0].innerHTML;
 					var content = content.replace(cfooter, footer);
@@ -107,7 +107,7 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 		var temp = document.URL.match(/&temp=([^&]+)/);
 		if (temp) {
 			var temp = temp[1].replace(new RegExp(/\%20/g), "_").replace(new RegExp(/[^a-zA-Z0-9_.:-]/g), "_")
-			var nrtemplates = editor.config.PQTemplates.NoReplyTemplates
+			var nrtemplates = editor.config.PQTemplates.noReplyTemplates
 			if (nrtemplates.indexOf(temp) != -1) {
 				editor.getCommand('noreply').setState( 2 );
 				editor.execCommand('noreply', editor)
