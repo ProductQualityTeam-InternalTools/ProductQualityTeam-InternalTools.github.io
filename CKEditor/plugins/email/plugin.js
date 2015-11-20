@@ -1,11 +1,11 @@
-CKEDITOR.plugins.add( 'email',
-{
+CKEDITOR.plugins.add( 'email', {
+	icons: 'email',
 	init: function( editor )
 	{
 		editor.addCommand( 'email', { modes: { wysiwyg: 1, source: 1 },
 		exec: function( editor ) {
-			editor.widgets.destroyAll();
 			//Set mailto Link from url parameters
+			var settings = editor.config.emailConfig;
 			var mailto = "mailto:";
 
 			var emailaddr = document.URL.match(/&email=([^&]+)/)
@@ -14,7 +14,7 @@ CKEDITOR.plugins.add( 'email',
 			}
 
 			var emailsubj = document.URL.match(/&sub=([^&]+)/)
-			if (!emailsubj) { var emailsubj = [0,"TurboTax Support: Response regarding recent TurboTax Support Contact"]; }
+			if (!emailsubj) { var emailsubj = [0,settings.defaultSubject]; }
 			mailto += "?subject="+emailsubj[1];
 			
 			var emailbcc = document.URL.match(/&bcc=([^&]+)/)
@@ -61,6 +61,7 @@ CKEDITOR.plugins.add( 'email',
 			} catch ( e ) {
 				editor.showNotification("Copy failed, please use CTRL+C");
 			}
+				editor.widgets.destroyAll()
 				editor.showNotification("Email copied to clipboard. CTRL+V into Outlook.");
 				recordEmail( editor );
 		},
@@ -69,9 +70,10 @@ CKEDITOR.plugins.add( 'email',
 	});
 
 	function recordEmail( editor ) {
-		var apptoken = "bzp4e3ubmekgnt45z6fucmmai5k";
-		var qbdbid = "bgkvndp4z";
-		var qbfid = "504";
+		var settings = editor.config.emailConfig;
+		var apptoken = settings.appToken;
+		var qbdbid = settings.dbid;
+		var qbfid = settings.historyFid;
 		var error = new CKEDITOR.plugins.notification( editor, { message: 'Unable to record email in Quickbase. Please do so manually.', type: 'warning' } );
 		var rid = document.URL.match(/&case=([^&]+)/);
 		if (!rid) { error.show(); return; }
@@ -99,23 +101,26 @@ CKEDITOR.plugins.add( 'email',
 		request += '</qdbapi>';
 
 		jQuery.ajax({
-		 type: "POST",
-		 contentType: "text/xml",
-		 async: false,
-		 url: url,
-		 dataType: "xml",
-		 processData: false,
-		 data: request,
-		 success: function(xml) {
-		  console.log(xml);
-		 }
+			type: "POST",
+			contentType: "text/xml",
+			url: url,
+			dataType: "xml",
+			processData: false,
+			data: request,
+			success: function(xml) {
+				if ($(xml).find("errcode").text() == 0) { editor.showNotification("Successfully recorded to Quickbase."); }
+				else { error.show(); }
+			},
+			error: function() {
+				error.show();
+			}
 		});
 	}
 		editor.ui.addButton( 'email',
 		{
 		label: 'Copy & Email',
 		command: 'email',
-		icon: this.path + 'icons/email.png'
+		toolbar: 'finalize'
 		} );
 	}
 
