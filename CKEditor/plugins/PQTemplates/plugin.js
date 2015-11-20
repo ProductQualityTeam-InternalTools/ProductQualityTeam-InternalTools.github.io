@@ -1,5 +1,5 @@
 CKEDITOR.plugins.add( 'PQTemplates', {
-    icons: 'emailtemps,batch,noReply,setCase',
+    icons: 'emailtemps,batch,noreply,setCase',
     init: function( editor ) {
 		var editor = CKEDITOR.instances.editor
 
@@ -60,13 +60,13 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 			}
 		});
 
-		editor.addCommand( 'noReply', {
+		editor.addCommand( 'noreply', {
 			exec: function ( editor ) {
 
 				if ($("#footer").length == 0) { this.setState( 0 ); }
 
 				if (this.state == "2") {
-					var footer = editor.config.PQTemplates.footerNoReply;
+					var footer = editor.config.PQTemplates.footernoreply;
 					var content = editor.getData();
 					var cfooter = $("#footer", content)[0].innerHTML;
 					var content = content.replace(cfooter, footer);
@@ -107,13 +107,13 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 		var temp = document.URL.match(/&temp=([^&]+)/);
 		if (temp) {
 			var temp = temp[1].replace(new RegExp(/\%20/g), "_").replace(new RegExp(/[^a-zA-Z0-9_.:-]/g), "_")
-			var nrtemplates = editor.config.PQTemplates.noReplyTemplates
+			var nrtemplates = editor.config.PQTemplates.noreplyTemplates
 			if (nrtemplates.indexOf(temp) != -1) {
-				editor.getCommand('noReply').setState( 2 );
-				editor.execCommand('noReply', editor)
+				editor.getCommand('noreply').setState( 2 );
+				editor.execCommand('noreply', editor)
 			}
 		}
-		else { editor.getCommand('noReply').setState( 0 ); }
+		else { editor.getCommand('noreply').setState( 0 ); }
 
 		var batch = document.URL.match(/&batch=([^&]+)/);
 		var custname = document.URL.match(/&name=([^&]+)/);
@@ -145,9 +145,9 @@ CKEDITOR.plugins.add( 'PQTemplates', {
             command: 'batch',
             toolbar: 'PQTemplates,2'
         });
-		editor.ui.addButton( 'NoReply', {
+		editor.ui.addButton( 'noreply', {
             label: 'No Reply',
-            command: 'noReply',
+            command: 'noreply',
             toolbar: 'PQTemplates,3'
         });
 		editor.ui.addButton( 'setCase', {
