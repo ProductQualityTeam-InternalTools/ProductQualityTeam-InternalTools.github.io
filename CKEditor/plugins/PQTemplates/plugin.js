@@ -124,6 +124,7 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 				editor.execCommand('batch', editor);
 			}
 		}
+		else { editor.getCommand('batch').setState( 1 ); }
 
 		var casenum = document.URL.match(/&case=([^&]+)/);
 		if (casenum) {
