@@ -46,7 +46,7 @@ CKEDITOR.dialog.add( 'PQTemplateDialog', function(  ) {
         }
     };
 	function loadTemplate(tempname) {
-		var newurl = document.URL.replace(/&temp=([^&]+)/,"\&temp="+tempname);
+		var newurl = document.URL.replace(/&temp=([^&]*)/,"\&temp="+tempname);
 		location.href = newurl;
 	}
 });
