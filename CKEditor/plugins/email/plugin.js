@@ -104,7 +104,7 @@ CKEDITOR.plugins.add( 'email', {
 		
 		var editor = CKEDITOR.instances.editor;
 		var body = editor.getData();
-		var body = body.split(/\<td id\=\"body\"\>/);
+		var body = body.split(/\<td id\=\"body\"[^\>]+>/);
 		if (body) {
 			var body = body[1].split(/<\/td\>/);
 			var body = body[0];
