@@ -12,26 +12,99 @@ CKEDITOR.dialog.add( 'PQTemplateDialog', function(  ) {
                         type: 'select',
                         id: 'PQTemplatesSelect',
                         label: '',
-						style: 'width:300px;height:185px',
-						size: 15,
+						style: 'width:300px;height:100%',
+						size: 20,
 						items: [],
 						onLoad: function() {
 							var editor = CKEDITOR.instances.editor
-							var templatefile = editor.config.PQTemplates.templatefile;
 							var dialog = this.getDialog()
-							$("#templates").load(templatefile + " span", function() {
+							
+							selbox = dialog.getContentElement( 'tab1', 'PQTemplatesSelect' );
+							selbox.add("Blank"," ")
+							
+							var dbid = editor.config.PQTemplates.TemplateQB.dbid
+							var appToken = editor.config.PQTemplates.TemplateQB.appToken
+							var nameFid = editor.config.PQTemplates.TemplateQB.nameFid
+							var categoryFid = editor.config.PQTemplates.TemplateQB.categoryFid
 
-								var temps = $("#templates").find("span");
+							var sharedFid = editor.config.PQTemplates.TemplateQB.sharedFid
+							var caseOnlyFid = editor.config.PQTemplates.TemplateQB.caseOnlyFid
+							var caseFid = editor.config.PQTemplates.TemplateQB.caseFid
+							
+							var qid = "5"
+							var clist = nameFid+'.'+categoryFid+'.'+sharedFid+'.'+caseOnlyFid+'.'+caseFid
 
-								selbox = dialog.getContentElement( 'tab1', 'PQTemplatesSelect' );
-													
-								//selbox.setAttribute("size",temps.length);
-								var i = document.createElement("option") 
-								selbox.add("Blank"," ")
-								$.each(temps, function () {
-									var i = document.createElement("option") 
-									selbox.add(this.id.replace(/_/g, " "), this.id)
-								});
+							var url="";
+							url +="https://intuitcorp.quickbase.com/db/"+dbid;
+							url +="?act=API_DoQuery";
+
+							var request="";
+							request += '<qdbapi>';
+							request += '<apptoken>'+appToken+'</apptoken>';
+							request += '<qid>'+qid+'</qid>';
+							request += '<clist>'+clist+'</clist>';
+							request += '</qdbapi>';
+
+							jQuery.ajax({
+								type: "POST",
+								contentType: "text/xml",
+								url: url,
+								dataType: "xml",
+								processData: false,
+								data: request,
+								success: function(xml) {
+									var temps = $("record",xml)
+									$.each(temps, function() {
+										if ($("case_only",this).text == "1") {
+											var tempname = $("name",this).text()
+											var casenum = document.URL.match(/&case=([^&]+)/)
+											if (casenum) {
+												var casenum = casenum[1]
+												if ($("case_number", this).text() != casenum) { return true; }
+												var tempname = "[Case] "+tempname
+											}
+											else { return true; }
+											selbox.add(tempname, $("name",this).text())
+										}
+									})
+									$.each(temps, function() {
+										if ($("category", this).text() == "Personal") {
+											var tempname = $("name",this).text()
+											var tempname = "[Personal] "+tempname
+											selbox.add(tempname, $("name",this).text())
+										}
+									})
+									$.each(temps, function() {
+										if ($("category", this).text() == "PQ Customer Responses") {
+											var tempname = $("name",this).text()
+											selbox.add(tempname, $("name",this).text())
+										}
+									})
+									
+									
+									/*
+									$.each(temps, function(){ 
+										var tempname = $("name", this).text()
+
+										if ($("caseonly", this).text() == "1") {
+
+											var casenum = document.URL.match(/&case=([^&]+)/)
+											if (casenum) {
+												var casenum = casenum[1]
+												if ($("case_number", this).text() != casenum) { return true; }
+												var tempname = "[Case] "+tempname
+											}
+											else { return true; }
+												
+										}
+										if ($("category", this).text() == "Personal") { var tempname = "[Personal] "+tempname}
+										selbox.add(tempname, tempname)
+									})
+									*/
+								},
+								error: function() {
+									console.log("Error loading template.")
+								}
 							});
 						},
                         validate: CKEDITOR.dialog.validate.notEmpty( "No template selected." )

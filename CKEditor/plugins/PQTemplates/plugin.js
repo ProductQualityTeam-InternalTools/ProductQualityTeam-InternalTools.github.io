@@ -1,11 +1,17 @@
 CKEDITOR.plugins.add( 'PQTemplates', {
-    icons: 'emailtemps,batch,noreply,setCase',
+    icons: 'emailtemps,savetemp,bcclist,batch,noreply,setCase',
     init: function( editor ) {
 		var editor = CKEDITOR.instances.editor
 
 		CKEDITOR.dialog.add( 'PQTemplateDialog', this.path + 'dialogs/templates.js' );
+		CKEDITOR.dialog.add( 'PQBatchDialog', this.path + 'dialogs/bcc.js' );
+		CKEDITOR.dialog.add( 'PQSaveTemplateDialog', this.path + 'dialogs/savetemplate.js' );
 
 		editor.addCommand( 'emailtemps', new CKEDITOR.dialogCommand( 'PQTemplateDialog' ) );
+
+		editor.addCommand( 'savetemp', new CKEDITOR.dialogCommand( 'PQSaveTemplateDialog' ) );		
+
+		editor.addCommand( 'bcclist', new CKEDITOR.dialogCommand( 'PQBatchDialog' ) );
 		
         editor.addCommand( 'batch', {
             exec: function( editor ) {
@@ -38,7 +44,6 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 			exec: function ( editor ) {
 
 				var casenum = document.URL.match(/&case=([^&]+)/);
-				
 				if (casenum) {
 					casenum = casenum[1];
 				}
@@ -84,8 +89,19 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 				}
 			}
 		});
+
 		
 		//Utility functions
+		function openReplace() {
+			var params = document.URL.match(/&([^=]+)([^&]+)/g)
+			for (i=0; i < params.length; i++) {
+				if (params[i].match(/^(&case|&name|&email|&bcc|&temp|&pageID|&noreply|&batch)/)) {
+					continue
+				}
+				var replacement = params[i].match(/&([^=]+)\=(.+)/)
+				replaceTxt("\\["+decodeURIComponent(replacement[1]+"\\]"), decodeURIComponent(replacement[2]), 1)
+			}
+		}
 		function fixCaps(str) {
 			return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 		}
@@ -106,9 +122,8 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 		
 		var temp = document.URL.match(/&temp=([^&]+)/);
 		if (temp) {
-			var temp = temp[1].replace(new RegExp(/\%20/g), "_").replace(new RegExp(/[^a-zA-Z0-9_.:-]/g), "_")
-			var nrtemplates = editor.config.PQTemplates.noReplyTemplates
-			if (nrtemplates.indexOf(temp) != -1) {
+			var noreply = sessionStorage.getItem("NoReply")
+			if (noreply == 1) {
 				editor.getCommand('noreply').setState( 2 );
 				editor.execCommand('noreply', editor)
 			}
@@ -117,6 +132,7 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 
 		var batch = document.URL.match(/&batch=([^&]+)/);
 		var custname = document.URL.match(/&name=([^&]+)/);
+		sessionStorage.removeItem('bcclist')
 		if (!batch) { var batch = [1,1] }
 		if (batch[1] == 0) {
 			if (custname) {
@@ -135,26 +151,37 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 			editor.getCommand('setCase').setState( 0 );
 			$("main:first").prepend("<div style='text-align: center; font-weight: bold; background:orange';>No Case number found. Email will not be logged to Quickbase. Please record it manually.</div>");
 		}
+		openReplace();
 		
 		editor.ui.addButton( 'emailtemps', {
 			label: 'Email Templates',
 			command: 'emailtemps',
-			toolbar: 'PQTemplates,1'
+			toolbar: 'PQTemplates,0'
 		});
+		editor.ui.addButton( 'savetemp', {
+			label: 'Save Personal Template',
+			command: 'savetemp',
+			toolbar: 'PQTemplates,1'
+		})
+		editor.ui.addButton( 'bcclist', {
+			label: 'BCC List',
+			command: 'bcclist',
+			toolbar: 'PQTemplates,2'
+		})
         editor.ui.addButton( 'Batch', {
             label: 'Multiple Customers',
             command: 'batch',
-            toolbar: 'PQTemplates,2'
+            toolbar: 'PQTemplates,3'
         });
 		editor.ui.addButton( 'noreply', {
             label: 'No Reply',
             command: 'noreply',
-            toolbar: 'PQTemplates,3'
+            toolbar: 'PQTemplates,4'
         });
 		editor.ui.addButton( 'setCase', {
             label: 'Insert Case #',
             command: 'setCase',
-            toolbar: 'PQTemplates,4'
+            toolbar: 'PQTemplates,5'
         });
     }
 });
