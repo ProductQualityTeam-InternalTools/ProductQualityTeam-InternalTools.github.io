@@ -43,12 +43,16 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 				var editorData
 				if (template) {
 
-					var dbid = "bke7kcnze"
-					var apptoken = "bxbj722drzze3sb6jc7endytstjq"
-					var namefid = "6"
+					var dbid = editor.config.PQTemplates.TemplateQB.dbid
+					var apptoken = editor.config.PQTemplates.TemplateQB.appToken
+					var namefid = editor.config.PQTemplates.TemplateQB.nameFid
+					var contentFid = editor.config.PQTemplates.TemplateQB.contentFid
+					var noReplyFid = editor.config.PQTemplates.TemplateQB.noReplyFid
+					var subjectFid = editor.config.PQTemplates.TemplateQB.subjectFid
+					var distrosFid = editor.config.PQTemplates.TemplateQB.distrosFid
 					
 					var query = "{'"+namefid+"'.EX.'"+template+"'}"
-					var clist = "7.9.14.15"
+					var clist = contentFid+"."+noReplyFid+"."+subjectFid+"."+distrosFid
 					
 					var url="";
 					url +="https://intuitcorp.quickbase.com/db/"+dbid;
