@@ -124,7 +124,7 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 				var analystName = sessionStorage.analystName
 				var analystEmail = sessionStorage.analystEmail
 				var custName = sessionStorage.custName
-				if (custName == "undefined") { var custName = editor.conifg.PQTemplate.batchName }
+				if (custName == "undefined") { var custName = editor.config.PQTemplate.batchName }
 				var casenum = sessionStorage.casenum
 				if (casenum == "undefined") { var casenum = "" }
 				
