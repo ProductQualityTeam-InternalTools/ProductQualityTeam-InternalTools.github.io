@@ -35,7 +35,7 @@ CKEDITOR.plugins.add( 'email', {
 				}
 			}
 
-			if (issueTitle) { emailsubj = emailsubj.replace(/\[ENTER ISSUE SUBJECT\]/,issueTitle) }
+			//if (issueTitle) { emailsubj = emailsubj.replace(/\[ENTER ISSUE SUBJECT\]/,issueTitle) }
 			if (mailto.indexOf("?") == -1) { mailto += "?" }
 			else { mailto += "&"}
 			
@@ -114,7 +114,7 @@ CKEDITOR.plugins.add( 'email', {
 		var request="";
 		request += '<qdbapi>';
 		request += '<apptoken>'+apptoken+'</apptoken>';
-		request += '<rid>'+rid[1]+'</rid>';
+		request += '<rid>'+rid+'</rid>';
 		request += "<field fid='"+qbfid+"'><![CDATA[<h3>Template: "+template+"</h3>"+body+"]]></field>";
 		request += '</qdbapi>';
 
