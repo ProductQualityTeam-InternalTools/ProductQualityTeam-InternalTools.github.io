@@ -31,7 +31,7 @@ CKEDITOR.plugins.add( 'email', {
 			}
 			else {
 				if (emailaddr) {
-					mailto += emailaddr+"?";
+					mailto += emailaddr;
 				}
 			}
 
