@@ -31,7 +31,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Remove some buttons provided by the standard plugins, which are
 	// not needed in the Standard(s) toolbar.
-	config.removeButtons = 'Subscript,Superscript,h1,h2,h3,h4,h5,h6,Strike,Format,Cut,Copy,PasteText,PasteFromWord,Templates,savetemp,bcclist';
+	config.removeButtons = 'Subscript,Superscript,h1,h2,h3,h4,h5,h6,Strike,Format,Cut,Copy,PasteText,PasteFromWord,Templates,savetemp';
 
 	// Set the most common block elements.
 	config.format_tags = 'p;h1;h2;h3;pre';
@@ -42,12 +42,8 @@ CKEDITOR.editorConfig = function( config ) {
 	config.fillEmptyBlocks = false;
 	
 	config.extraAllowedContent = '*[id](*){*}'
-	
-	//depreciated
-	//config.templates_files = [ 'https://ProductQualityTeam-InternalTools.github.io/CKEditor/plugins/templates/templates/TT-templates.js' ];
 
 	config.PQTemplates = {
-		batchName: 'TurboTax Customer',
 		globalBatchName: 0,
 		footerReply: "This message was sent to inform you of a critical matter. Please note that if you have chosen not to receive marketing messages from Intuit, that choice applies <u>only</u> to promotional materials. You will continue to receive critical notifications that are legally required or could affect your service or software.&#160;",
 		footerNoReply: "This message was sent to inform you of a critical matter. Replies to this email will not be received. Please note that if you have chosen not to receive marketing messages from Intuit, that choice applies <u>only</u> to promotional materials. You will continue to receive critical notifications that are legally required or could affect your service or software.&#160;",
@@ -63,19 +59,22 @@ CKEDITOR.editorConfig = function( config ) {
 			subjectFid: "14",
 			distrosFid: "15",
 		},
-		EmailQB: {
-			dbid: '9df5xdir',
-			appToken: 'd9qr25tda5rnrb69z3z9de8uy58',
-			emailFid: '6',
-			caseFid: '12'
-		}
 	}
 	
 	config.emailConfig = {
+		batchName: 'TurboTax Customer',
 		defaultSubject: 'TurboTax Support: Response regarding recent TurboTax Support Contact',
 		dbid: 'bgkvndp4z',
 		appToken: 'bzp4e3ubmekgnt45z6fucmmai5k',
-		historyFid: '504'
+		historyFid: '504',
+		bccQB: {
+			dbid: '9df5xdir',
+			appToken: 'd9qr25tda5rnrb69z3z9de8uy58',
+			emailFid: '6',
+			caseFid: '12',
+			closedFid: '17',
+			checkinFid: '222'
+		}
 	}
 	
 	config.droplerConfig = {

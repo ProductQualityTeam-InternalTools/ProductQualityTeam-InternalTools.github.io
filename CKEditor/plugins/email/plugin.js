@@ -2,6 +2,10 @@ CKEDITOR.plugins.add( 'email', {
 	icons: 'email',
 	init: function( editor )
 	{
+		CKEDITOR.dialog.add( 'bccdialog', this.path + 'dialogs/bcc.js' );
+		
+		editor.addCommand( 'bcclist', new CKEDITOR.dialogCommand( 'bccdialog' ) );
+		
 		editor.addCommand( 'email', { modes: { wysiwyg: 1, source: 1 },
 		exec: function( editor ) {
 			//Set mailto Link from url parameters
@@ -10,39 +14,32 @@ CKEDITOR.plugins.add( 'email', {
 			var mailto = "mailto:";
 
 			var emailbcc = sessionStorage.getItem('bcclist')
-			if (!emailbcc) {
-				var emailbcc = document.URL.match(/&bcc=([^&]+)/) 
-				if (emailbcc) {
-					var emailbcc = emailbcc[1];
-				}
-			}
-			
-			var emailaddr = document.URL.match(/&email=([^&]+)/)
-			if (emailaddr) {var emailaddr = emailaddr[1]}
-			//else { var emailaddr = mailto: }
+			var emailaddr = sessionStorage.getItem('custEmail')
 			var distros = sessionStorage.getItem("distros")
-			if (distros) {emailaddr += ";" + distros}
+			var issueTitle = sessionStorage.getItem("issueTitle")
+			if (distros) { var emailaddr = distros }
 
+			var emailsubj = sessionStorage.getItem("emailsubj");
+			
 			if (emailbcc) {
-				mailto += "&bcc=" + emailbcc;
-				if ((emailaddr) && (mailto.indexOf(emailaddr[1]) == -1)) { mailto += ";"+emailaddr[1]; }
+				if ((mailto.length + emailbcc.length) > 2000) {
+					var error = new CKEDITOR.plugins.notification( editor, { message: 'Too many BCC addresses to auto-populate. Please copy/paste the list manually.', type: 'warning' } );
+					error.show()
+					editor.execCommand("bcclist")
+				}
+				else { mailto += "?bcc=" + emailbcc; }
 			}
 			else {
 				if (emailaddr) {
-					mailto += emailaddr;
-				}				
-			}
-
-			var emailsubj = document.URL.match(/&sub=([^&]+)/);
-			if (!emailsubj) {
-				var emailsubj = sessionStorage.getItem("emailsubj");
-				if (!emailsubj) {
-					var emailsubj = [0,settings.defaultSubject];
+					mailto += emailaddr+"?";
 				}
 			}
-			else emailsubj = emailsubj[1];
+
+			if (issueTitle) { emailsubj = emailsubj.replace(/\[ENTER ISSUE SUBJECT\]/,issueTitle) }
+			if (mailto.indexOf("?") == -1) { mailto += "?" }
+			else { mailto += "&"}
 			
-			mailto += "?subject="+emailsubj;
+			mailto += "subject="+emailsubj;
 			
 			document.location.href=mailto;
 			
@@ -70,7 +67,7 @@ CKEDITOR.plugins.add( 'email', {
 					range.select();
 				}
 
-				// Force triggering selectionChange (#7008)
+				//Force triggering selectionChange (#7008)
 				editor.forceNextSelectionCheck();
 				editor.selectionChange();
 			}
@@ -96,11 +93,11 @@ CKEDITOR.plugins.add( 'email', {
 		var qbdbid = settings.dbid;
 		var qbfid = settings.historyFid;
 		var error = new CKEDITOR.plugins.notification( editor, { message: 'Unable to record email in Quickbase. Please do so manually.', type: 'warning' } );
-		var rid = document.URL.match(/&case=([^&]+)/);
+		var rid = sessionStorage.getItem('casenum');
 		if (!rid) { error.show(); return; }
 		
-		var temp = document.URL.match(/&temp=([^&]+)/);
-		if (!temp) { error.show(); return; }
+		var template = sessionStorage.getItem('template');
+		if (!template) { error.show(); return; }
 		
 		var editor = CKEDITOR.instances.editor;
 		var body = editor.getData();
@@ -118,7 +115,7 @@ CKEDITOR.plugins.add( 'email', {
 		request += '<qdbapi>';
 		request += '<apptoken>'+apptoken+'</apptoken>';
 		request += '<rid>'+rid[1]+'</rid>';
-		request += "<field fid='"+qbfid+"'><![CDATA[<h3>Template: "+decodeURI(temp[1])+"</h3>"+body+"]]></field>";
+		request += "<field fid='"+qbfid+"'><![CDATA[<h3>Template: "+template+"</h3>"+body+"]]></field>";
 		request += '</qdbapi>';
 
 		jQuery.ajax({
@@ -137,12 +134,16 @@ CKEDITOR.plugins.add( 'email', {
 			}
 		});
 	}
-		editor.ui.addButton( 'email',
-		{
-		label: 'Copy & Email',
-		command: 'email',
-		toolbar: 'finalize'
-		} );
+		editor.ui.addButton( 'bcclist', {
+			label: 'BCC List',
+			command: 'bcclist',
+			toolbar: 'finalize,0'
+		});
+		editor.ui.addButton( 'email', {
+			label: 'Copy & Email',
+			command: 'email',
+			toolbar: 'finalize,1'
+		});
 	}
 
 } );
