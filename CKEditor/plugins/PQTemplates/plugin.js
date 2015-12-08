@@ -121,7 +121,7 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 			}
 			else { editor.getCommand('noreply').setState( 0 ); }
 			
-			var thisyear = new Date()getFullYear()
+			var thisyear = new Date().getFullYear()
 			var regex = new RegExp("\\[COPYRIGHT YEAR\\]","g")
 			var content = content.replace(regex, thisyear));
 
