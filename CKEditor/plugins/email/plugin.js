@@ -23,7 +23,7 @@ CKEDITOR.plugins.add( 'email', {
 			
 			if (emailbcc) {
 				if ((mailto.length + emailbcc.length) > 2000) {
-					var error = new CKEDITOR.plugins.notification( editor, { message: 'Too many BCC addresses to auto-populate. Please copy/paste the list manually.', type: 'warning' } );
+					var error = new CKEDITOR.plugins.notification( editor, { message: 'Too many BCC addresses to auto-populate. Please paste the email, then copy/paste the BCC list.', type: 'warning' } );
 					error.show()
 					editor.execCommand("bcclist")
 				}
@@ -73,7 +73,6 @@ CKEDITOR.plugins.add( 'email', {
 			}
 
 			//Copy
-			
 			try {
 				// Other browsers throw an error if the command is disabled.
 				editor.document.$.execCommand( 'Copy', false, null );

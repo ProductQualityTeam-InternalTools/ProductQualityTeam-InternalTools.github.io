@@ -120,26 +120,35 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 				}
 			}
 			else { editor.getCommand('noreply').setState( 0 ); }
+			
+			var thisyear = new Date()getFullYear()
+			var regex = new RegExp("\\[COPYRIGHT YEAR\\]","g")
+			var content = content.replace(regex, thisyear));
 
 			var skipInit = sessionStorage.getItem("skipInit")
 			
 			if (skipInit != 1) {
 				//Keyword replacements
 				var analystName = sessionStorage.analystName
+				if (analystName == "undefined") { var analystName = "" }
+				
 				var analystEmail = sessionStorage.analystEmail
+				if (analystEmail == "undefined") { var analystEmail = "" }
+				
 				var custName = sessionStorage.custName
-				if (custName == "undefined") { var custName = editor.config.emailConfig.batchName }
+				if (custName == "undefined") { var custName = "" }
+				
 				var casenum = sessionStorage.casenum
 				if (casenum == "undefined") { var casenum = "" }
 				
 				if (content.match(/\[CUSTOMER NAME\]/)) {
 					if (custName) {
-						var regex = new RegExp("\\[CUSTOMER NAME\\]")
+						var regex = new RegExp("\\[CUSTOMER NAME\\]","g")
 						var content = content.replace(regex, fixCaps(custName));
 					}
 					else {
-						var regex = new RegExp("\\[CUSTOMER NAME\\]")
-						var content = content.replace(regex, editor.config.PQTemplates.batchName);
+						var regex = new RegExp("\\[CUSTOMER NAME\\]","g")
+						var content = content.replace(regex, editor.config.emailConfig.batchName);
 					}
 				}
 
@@ -162,30 +171,13 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 				}
 			}
 			return(content)
-			
 		}
 
 		function fixCaps(str) {
 			return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 		}
 		
-		function replaceTxt(str1, str2, global) {
-			if (global == 1) {
-				var regex = new RegExp(str1,"g")
-				var content = editor.getData();
-				var content = $.parseHTML(content)[0]
-				$("#body", content).html().replace(regex, str2);
-				editor.setData($(content)[0].outerHTML)
-			}
-			else {
-				var content = editor.getData();
-				var content = $.parseHTML(content)[0]
-				$("#body", content).html().replace(str1, str2);				
-				editor.setData($(content)[0].outerHTML)
-			}
-		}
-		
-		CKEDITOR.on('instanceReady', function() { console.log("ready."); editor.execCommand('loadTemplate', editor)});
+		CKEDITOR.on('instanceReady', function() { editor.execCommand('loadTemplate', editor)});
 		
 		editor.ui.addButton( 'emailtemps', {
 			label: 'Email Templates',
@@ -200,7 +192,7 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 		editor.ui.addButton( 'noreply', {
             label: 'No Reply',
             command: 'noreply',
-            toolbar: 'PQTemplates,3'
+            toolbar: 'PQTemplates,2'
         });
     }
 });
