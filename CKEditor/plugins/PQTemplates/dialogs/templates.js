@@ -33,7 +33,7 @@ CKEDITOR.dialog.add( 'PQTemplateDialog', function(  ) {
 							var caseFid = settings.caseFid
 							
 							var qid = "5"
-							var clist = nameFid+'
+							var clist = nameFid
 
 							var url="";
 							url +="https://intuitcorp.quickbase.com/db/"+dbid;
