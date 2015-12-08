@@ -36,7 +36,7 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 				}
 			}
 		});
-		
+	
 		editor.addCommand( 'loadTemplate', {
 			exec: function ( editor ) {
 				var template = sessionStorage.getItem('template')
