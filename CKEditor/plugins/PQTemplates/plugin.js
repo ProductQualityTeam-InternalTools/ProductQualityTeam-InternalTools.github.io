@@ -123,7 +123,7 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 			
 			var thisyear = new Date().getFullYear()
 			var regex = new RegExp("\\[COPYRIGHT YEAR\\]","g")
-			var content = content.replace(regex, thisyear));
+			var content = content.replace(regex, thisyear);
 
 			var skipInit = sessionStorage.getItem("skipInit")
 			
