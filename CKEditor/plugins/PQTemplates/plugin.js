@@ -40,6 +40,7 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 		editor.addCommand( 'loadTemplate', {
 			exec: function ( editor ) {
 				var template = sessionStorage.getItem('template')
+				var emailbody = sessionStorage.getItem('emailbody')
 				var editorData
 				if (template) {
 
@@ -95,6 +96,20 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 							console.log("Error loading template.")
 						}
 					});
+				}
+				else if (emailbody) {
+					var editorData = editor.getData();
+
+					var editorData = $.parseHTML(editorData)[0]
+					var emailbody = decodeURIComponent(emailbody).replace(/\n/g,'<br \\>')
+					$("#body",editorData).html(emailbody)
+					
+					var editorData = $(editorData)[0].outerHTML
+					var content = initTemplate(editor, editorData)
+					
+					editor.setData(content)
+					
+					document.getElementById("loadOverlay").style.display = "none";					
 				}
 				else { document.getElementById("loadOverlay").style.display = "none"; }
 			}
