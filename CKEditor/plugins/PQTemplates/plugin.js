@@ -170,11 +170,11 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 				//special case to handle existing response templates that use %CUSTOMER_NAME%
 				if (content.match(/\%CUSTOMER_NAME\%/)) {
 					if (custName) {
-						var regex = new RegExp("\\%CUSTOMER NAME\\%","g")
+						var regex = new RegExp("\\%CUSTOMER_NAME\\%","g")
 						var content = content.replace(regex, fixCaps(custName));
 					}
 					else {
-						var regex = new RegExp("\\%CUSTOMER NAME\\%","g")
+						var regex = new RegExp("\\%CUSTOMER_NAME\\%","g")
 						var content = content.replace(regex, editor.config.emailConfig.batchName);
 					}
 				}
