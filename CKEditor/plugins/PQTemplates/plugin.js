@@ -156,6 +156,10 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 				var casenum = sessionStorage.casenum
 				if (casenum == "undefined") { var casenum = "" }
 				
+				var issueTitle = sessionStorage.issueTitle
+				var issueTitle = unescape(issueTitle)
+				if (issueTitle == "undefined") { var issueTitle = "" }
+				
 				if (content.match(/\[CUSTOMER NAME\]/)) {
 					if (custName) {
 						var regex = new RegExp("\\[CUSTOMER NAME\\]","g")
@@ -195,6 +199,10 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 				if (analystEmail) {
 					var regex = new RegExp("\\[ANALYST EMAIL\\]","g");
 					var content = content.replace(regex, analystEmail);
+				}
+				if (issueTitle) {
+					var regex = new RegExp("\\[ISSUE TITLE\\]","g");
+					var content = content.replace(regex, issueTitle);
 				}
 			}
 			return(content)
