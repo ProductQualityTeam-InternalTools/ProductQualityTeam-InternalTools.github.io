@@ -34,27 +34,35 @@ CKEDITOR.plugins.add( 'dropler', {
         }
 
         validateConfig();
-
+		progbar = {};
+		
         var backend = backends[editor.config.droplerConfig.backend];
         backend.init();
-
+		
         function doNothing(e) { }
         function orPopError(err) { alert(err.data.error) }
 
         function dropHandler(e) {
             e.preventDefault();
             var file = e.dataTransfer.files[0];
+
+			var fntoken = btoa(file.name)
+
+			progbar[fntoken] = editor.showNotification( 'Adding Image...', 'progress', 0);
             backend.upload(file).then(insertImage, orPopError);
         }
 
         function insertImage(href) {
+			var fntoken = href[1]
+			progbar[fntoken].update( { progress: 0.9 } );
             var elem = editor.document.createElement('img', {
                 attributes: {
-                    src: href
+                    src: href[0]
                 }
             });
             editor.insertElement(elem);
 			editor.widgets.initOn(elem, 'image');
+			progbar[fntoken].update( { type: 'success', message: 'File uploaded.' } );
         }
 
         function addHeaders(xhttp, headers) {
@@ -69,11 +77,15 @@ CKEDITOR.plugins.add( 'dropler', {
 			return new Promise(function(resolve, reject) {
 				var settings = editor.config.droplerConfig.settings;
 
+				var fntoken = btoa(file.name)
+
+				progbar[fntoken].update( { progress: 0.1 } );
+
 				var reader = new FileReader();
 				reader.onloadend = function() {
 					var blob = reader.result;
 					var blob = blob.split(",");
-
+					
 					var casenum = sessionStorage.getItem('casenum');
 					
 					var apptoken = settings.appToken
@@ -94,25 +106,47 @@ CKEDITOR.plugins.add( 'dropler', {
 					request += '</qdbapi>';
 
 					jQuery.ajax({
-					 type: "POST",
-					 contentType: "text/xml",
-					 url: url,
-					 dataType: "xml",
-					 processData: false,
-					 data: request,
-					 success: function(xml) {
-						var rid = $(xml).find('rid').text();
-						resolve("https://intuitcorp.quickbase.com/up/"+dbid+"/a/r"+rid+"/e"+fid+"/v0")
-					 },
-					 error: function(xml) {
-						reject($(xml).find("errtext").text())
-					 }
+						type: "POST",
+						contentType: "text/xml",
+						url: url,
+						dataType: "xml",
+						processData: false,
+						data: request,
+						success: function(xml) {
+							var rid = $(xml).find('rid').text();
+
+							progbar[fntoken].update( { progress: 0.5 } );
+							resolve(["https://intuitcorp.quickbase.com/up/"+dbid+"/a/r"+rid+"/e"+fid+"/v0",fntoken])
+						},
+							error: function(xml) {
+							progbar[fntoken].update( { type: 'warning', message: 'Upload Failed.' } );
+							reject($(xml).find("errtext").text())
+						}
 					});
-					
 				}
 				reader.readAsDataURL(file)
 			});
 		}
+		
+		editor.addCommand( 'initDropler', {
+			exec: function ( editor ) {
+				var iframeBase = document.querySelector('iframe').contentDocument.querySelector('html');
+				var iframeBody = iframeBase.querySelector('body');
+
+				iframeBody.ondragover = doNothing;
+				iframeBody.ondrop = dropHandler;
+
+				paddingToCenterBody = ((iframeBase.offsetWidth - iframeBody.offsetWidth) / 2) + 'px';
+				iframeBase.style.height = '100%';
+				iframeBase.style.width = '100%';
+				iframeBase.style.overflowX = 'hidden';
+
+				iframeBody.style.height = '100%';
+				iframeBody.style.margin = '0';
+				iframeBody.style.paddingLeft = paddingToCenterBody;
+				iframeBody.style.paddingRight = paddingToCenterBody;
+			}
+		})
 		
         CKEDITOR.on('instanceReady', function() {
             var iframeBase = document.querySelector('iframe').contentDocument.querySelector('html');
@@ -120,6 +154,8 @@ CKEDITOR.plugins.add( 'dropler', {
 
             iframeBody.ondragover = doNothing;
             iframeBody.ondrop = dropHandler;
+			//iframeBase.ondragover = doNothing;
+            //iframeBase.ondrop = dropHandler;
 
             paddingToCenterBody = ((iframeBase.offsetWidth - iframeBody.offsetWidth) / 2) + 'px';
             iframeBase.style.height = '100%';
