@@ -75,7 +75,7 @@ CKEDITOR.editorConfig = function( config ) {
 			emailFName: 'emai_addr',
 			caseFid: '12',
 			closedFid: '17',
-			checkinFid: '222',
+			checkinFid: '221',
 			safeMode: '0'
 		}
 	}
