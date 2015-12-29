@@ -53,10 +53,10 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 					var editorData = $(editorData)[0].outerHTML
 					var content = initTemplate(editor, editorData)
 
-					editor.setData(content)
-
-					editor.execCommand('initDropler', editor)
-					document.getElementById("loadOverlay").style.display = "none";
+					editor.setData(content, function() {
+						editor.execCommand('initDropler', editor);
+						document.getElementById("loadOverlay").style.display = "none";
+					});
 				}
 				else if (template) {
 					var settings = editor.config.PQTemplates.TemplateQB;
@@ -105,10 +105,10 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 							var editorData = $(editorData)[0].outerHTML
 							var content = initTemplate(editor, editorData)
 
-							editor.setData(content)
-							
-							editor.execCommand('initDropler', editor)
-							document.getElementById("loadOverlay").style.display = "none";
+							editor.setData(content, function() {
+								editor.execCommand('initDropler', editor)
+								document.getElementById("loadOverlay").style.display = "none";
+							})
 						}
 						else {
 							var errcode = $('errcode', xml).text();
@@ -118,10 +118,10 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 							var editorData = editor.getData();
 							sessionStorage.setItem("skipInit","1");
 							var content = initTemplate(editor, editorData);
-							editor.setData(content);
-
-							editor.execCommand('initDropler', editor)
-							document.getElementById("loadOverlay").style.display = "none";
+							editor.setData(content, function() {
+								editor.execCommand('initDropler', editor)
+								document.getElementById("loadOverlay").style.display = "none";
+							});
 						}
 					})
 					.fail(function(data) {
@@ -134,10 +134,11 @@ CKEDITOR.plugins.add( 'PQTemplates', {
 					var editorData = editor.getData();
 					sessionStorage.setItem("skipInit","1");
 					var content = initTemplate(editor, editorData);
-					editor.setData(content);
-					
-					editor.execCommand('initDropler', editor)
-					document.getElementById("loadOverlay").style.display = "none"; }
+					editor.setData(content, function() {					
+						editor.execCommand('initDropler', editor)
+						document.getElementById("loadOverlay").style.display = "none";
+					})
+				}
 			}
 		})
 
