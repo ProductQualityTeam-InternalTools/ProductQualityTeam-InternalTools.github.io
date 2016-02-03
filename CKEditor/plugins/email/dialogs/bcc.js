@@ -83,7 +83,8 @@ CKEDITOR.dialog.add( 'bccdialog', function( editor ) {
 									label: 'Open in Quickbase',
 									title: 'Open a report of these emails in the Quickbase',
 									onClick: function(editor) {
-										//var editor = CKEDITOR.instances.editor
+										var editor = this.getDialog();
+										editor = editor.getParentEditor();
 										var settings = editor.config.emailConfig.bccQB
 										var dbid = settings.dbid;
 										var apptoken = settings.appToken;
