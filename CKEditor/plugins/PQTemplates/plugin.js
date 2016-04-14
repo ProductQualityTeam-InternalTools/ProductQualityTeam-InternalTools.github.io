@@ -4,7 +4,6 @@ CKEDITOR.plugins.add('PQTemplates', {
 	init: function(editor) {
 		//var editor = CKEDITOR.instances.editor
 
-		CKEDITOR.dialog.add( 'PQTemplateDialog', this.path + 'dialogs/templates.js' );
 		CKEDITOR.dialog.add('PQTemplateDialog', this.path + 'dialogs/templates.js');
 		CKEDITOR.dialog.add('PQSaveTemplateDialog', this.path + 'dialogs/savetemplate.js');
 
