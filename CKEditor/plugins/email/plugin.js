@@ -149,6 +149,7 @@ CKEDITOR.plugins.add('email', {
 			var recordStatus = editor.showNotification('Saving to Quickbase - DO NOT CLOSE THIS WINDOW', 'progress', 0);
 			var qbdbid = settings.dbid;
 			var qbfid = settings.historyFid;
+			var sentct = (sessionStorage.bcclist) ? sessionStorage.bcclist.split(";").length : 1;
 			//var ckerr = new CKEDITOR.plugins.notification( editor, { message: 'Unable to record email contents in CSI QuickBase record. Please do so manually.', type: 'warning' } );
 			var rid = sessionStorage.getItem('casenum');
 			if (!rid) {
@@ -185,7 +186,7 @@ CKEDITOR.plugins.add('email', {
 			request += '<qdbapi>';
 			request += '<apptoken>' + apptoken + '</apptoken>';
 			request += '<rid>' + rid + '</rid>';
-			request += "<field fid='" + qbfid + "'><![CDATA[<h3>Template: " + template + "</h3>" + body + "]]></field>";
+			request += "<field fid='" + qbfid + "'><![CDATA[<h3>Template: " + template + " - " + sentct + " Emails Sent</h3>" + body + "]]></field>";
 			request += '</qdbapi>';
 
 			jQuery.ajax({
@@ -220,6 +221,64 @@ CKEDITOR.plugins.add('email', {
 					});
 					console.log("CKEditor Error: Request to Email Tracker QuickBase Failed. Error " + data.status + ": " + data.statusText);
 				});
+				
+			if (sessionStorage.bulkType) {
+				var url = "";
+				url += "https://intuitcorp.quickbase.com/db/" + qbdbid;
+				url += "?act=API_AddRecord";
+				
+				var apptoken = settings.notify.appToken;
+				var recordStatus = editor.showNotification('Saving to CSI Notification Quickbase - DO NOT CLOSE THIS WINDOW', 'progress', 0);
+				var qbdbid = settings.notify.dbid;
+				var csiidfid = settings.notify.csiidfid;
+				var sentfid = settings.notify.sentfid;
+				var contentfid = settings.notify.contentfid;
+				var rtypefid = settings.notify.rtypefid;
+				var responsetype = sessionStorage.bulkType;
+				
+				var request = "";
+				
+				request += '<qdbapi>';
+				request += '<apptoken>' + apptoken + '</apptoken>';
+				request += "<field fid='" + sentfid + "'>" + sentct + "</field>";
+				request += "<field fid='" + csiidfid + "'>" + rid + "</field>";
+				request += "<field fid='" + contentfid + "'><![CDATA[" + body + "]]></field>";
+				request += "<field fid='" + rtypefid + "'>" + responsetype + "</field>"
+				request += '</qdbapi>';
+
+				jQuery.ajax({
+						type: "POST",
+						contentType: "text/xml",
+						url: url,
+						dataType: "xml",
+						processData: false,
+						data: request
+					})
+					.done(function(xml) {
+						if ($('errcode', xml).text() == 0) {
+							recordStatus.update({
+								type: 'success',
+								message: 'Successfully recorded to QuickBase.'
+							});
+						}
+						else {
+							var errcode = $('errcode', xml).text();
+							var errtext = $('errtext', xml).text();
+							recordStatus.update({
+								type: 'warning',
+								message: 'Unable to record email contents in CSI Notification QuickBase record. Please do so manually.'
+							});
+							console.log("CKEditor Error: CSI Notification QuickBase returned error. " + errcode + ": " + errtext);
+						}
+					})
+					.fail(function(data) {
+						recordStatus.update({
+							type: 'warning',
+							message: 'Unable to record email contents in CSI Notification QuickBase record. Please do so manually.'
+						});
+						console.log("CKEditor Error: Request to CSI Notification QuickBase Failed. Error " + data.status + ": " + data.statusText);
+					});
+			}
 		}
 
 		function updateResponsesSafeMode(editor, dateFid) {

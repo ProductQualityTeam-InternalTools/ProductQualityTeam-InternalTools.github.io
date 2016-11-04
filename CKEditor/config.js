@@ -78,6 +78,14 @@ CKEDITOR.editorConfig = function( config ) {
 			closedFid: '17',
 			checkinFid: '221',
 			safeMode: '0'
+		},
+		notify: {
+			dbid: 'bi2sapbm2',
+			appToken: 'bzp4e3ubmekgnt45z6fucmmai5k',
+			sentfid: '49',
+			csiidfid: '33',
+			contentfid: '38',
+			rtypefid: '37'
 		}
 	}
 	
