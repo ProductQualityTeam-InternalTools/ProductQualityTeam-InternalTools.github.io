@@ -224,7 +224,7 @@ CKEDITOR.plugins.add('email', {
 				
 			if (sessionStorage.bulkType) {
 				var apptoken = settings.notify.appToken;
-				var recordStatus = editor.showNotification('Saving to CSI Notification Quickbase - DO NOT CLOSE THIS WINDOW', 'progress', 0);
+				var recordStatus2 = editor.showNotification('Saving to CSI Notification Quickbase - DO NOT CLOSE THIS WINDOW', 'progress', 0);
 				var qbdbid = settings.notify.dbid;
 				var csiidfid = settings.notify.csiidfid;
 				var sentfid = settings.notify.sentfid;
@@ -256,7 +256,7 @@ CKEDITOR.plugins.add('email', {
 					})
 					.done(function(xml) {
 						if ($('errcode', xml).text() == 0) {
-							recordStatus.update({
+							recordStatus2.update({
 								type: 'success',
 								message: 'Successfully recorded to QuickBase.'
 							});
@@ -264,7 +264,7 @@ CKEDITOR.plugins.add('email', {
 						else {
 							var errcode = $('errcode', xml).text();
 							var errtext = $('errtext', xml).text();
-							recordStatus.update({
+							recordStatus2.update({
 								type: 'warning',
 								message: 'Unable to record email contents in CSI Notification QuickBase record. Please do so manually.'
 							});
@@ -272,7 +272,7 @@ CKEDITOR.plugins.add('email', {
 						}
 					})
 					.fail(function(data) {
-						recordStatus.update({
+						recordStatus2.update({
 							type: 'warning',
 							message: 'Unable to record email contents in CSI Notification QuickBase record. Please do so manually.'
 						});
