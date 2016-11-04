@@ -223,10 +223,6 @@ CKEDITOR.plugins.add('email', {
 				});
 				
 			if (sessionStorage.bulkType) {
-				var url = "";
-				url += "https://intuitcorp.quickbase.com/db/" + qbdbid;
-				url += "?act=API_AddRecord";
-				
 				var apptoken = settings.notify.appToken;
 				var recordStatus = editor.showNotification('Saving to CSI Notification Quickbase - DO NOT CLOSE THIS WINDOW', 'progress', 0);
 				var qbdbid = settings.notify.dbid;
@@ -235,6 +231,10 @@ CKEDITOR.plugins.add('email', {
 				var contentfid = settings.notify.contentfid;
 				var rtypefid = settings.notify.rtypefid;
 				var responsetype = sessionStorage.bulkType;
+
+				var url = "";
+				url += "https://intuitcorp.quickbase.com/db/" + qbdbid;
+				url += "?act=API_AddRecord";
 				
 				var request = "";
 				
